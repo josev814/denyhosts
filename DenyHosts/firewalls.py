@@ -77,7 +77,7 @@ class IpTables(object):
             rule = self.__create_singleport_rule(blocked_ip)
         else:
             rule = self.__create_block_all_rule(blocked_ip)
-        return '%s -D ' % rule
+        return '%s -D %s ' % (self.__iptables, rule)
 
     def add_ipset_drop_groups(self, ipset_group):
         iptables_groups = ['INPUT', 'FORWARD']
