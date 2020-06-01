@@ -84,7 +84,7 @@ class IpTables(object):
         for iptable_group in iptables_groups:
             ipset_rule = self.__create_ipset_rule(iptable_group, ipset_group)
             try:
-                os.system(ipset_rule)
+                os.system('%s -I %s' % (self.__iptables, ipset_rule))
             except Exception as e:
                 exception('Error creating ipset group in iptables for %s: %s' % (iptable_group, e))
 
@@ -96,7 +96,7 @@ class IpTables(object):
             rule = self.__create_singleport_rule(iptables_group, ipset_group)
         else:
             rule = self.__create_block_all_rule(iptables_group, ipset_group)
-        return '%s -I %s' % (self.__iptables, rule)
+        return rule
 
     def __create_singleport_ipset_rule(self, iptables_group, ipset_group):
         debug("Generating Ipset %s block single port rule" % iptables_group)
@@ -116,6 +116,17 @@ class IpTables(object):
                   (self.__iptables, iptables_group, ipset_group)
         return ba_rule
 
+    def does_ipset_group_exist(self):
+        ipset_group = self.get('IPSET_NAME')
+        ipset_rule = self.__create_ipset_rule('INPUT', ipset_group)
+        try:
+            subprocess.check_output([self.__iptables, '-C', ipset_rule])
+        except Exception as e:
+            # if it doesn't exist an error occurs
+            exception('IPSET group %s, does not exist: %s' % (ipset_group, e))
+            return False
+        return True
+
 
 class IpSet(object):
 
@@ -128,10 +139,12 @@ class IpSet(object):
             try:
                 subprocess.check_output(['ipset', 'add', self.blacklist, 'hash:ip', 'hashsize', '4096'])
                 debug('%s ipset group created' % self.blacklist)
-                iptables = IpTables(self.prefs)
-                iptables.add_ipset_drop_groups(self.blacklist)
             except subprocess.CalledProcessError:
                 error('Unable to create the ipset group: %s' % self.blacklist)
+        iptables = IpTables(self.prefs)
+
+        if not iptables.does_ipset_group_exist():
+            iptables.add_ipset_drop_groups(self.blacklist)
 
     def does_blacklist_exist(self):
         try:
