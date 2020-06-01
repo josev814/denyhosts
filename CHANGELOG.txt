@@ -1,12 +1,56 @@
 DENYHOSTS CHANGELOG
 
-3.0
+3.1
 ======================
+
+Fixed a type check in DenyHosts/report.py which was causing
+problems when moving between Python2 and Python3.
+
+Added checks to see if an IP address is valid. This
+pulls in the requirement for the ipaddr Python module.
+
+Added check to see if there is a break-in attempt against
+the Dovecot imap service. This is an option which can be
+enabled/disabled in the configuration file. It is turned off
+by default.
 
 - Add IPset support to better handle IPTable firewall rules.
 
 - Cleaned up some warnings and improved IPset code.
 
+
+3.0
+======================
+
+Initial translation of code from Python 2 to Python 3.
+DenyHosts can now be run as either a Python 2 or a Python 3
+program.
+
+Added patch from Fedora to fix initial sync issue and
+insure info logging stream is active.
+(Provided by Jason Tibbitts.)
+
+Added "import logging" to denyhosts.py to avoid errors
+when setting up logging. (See above change.)
+
+Added option PF_TABLE_FILE to the configuration file.
+When this option is enabled it causes DenyHosts to write
+blocked IP addresses to a text file. The default location
+is /etc/blacklist. This text file should correspond to a
+PF firewall table.
+
+At start-up, try to create the file specified by
+HOSTS_DENY. That way we avoid errors later if the
+file does not exists. Can be a problem on operating systems
+where /etc/hosts.deny does not exist in the default
+configuration.
+
+Added regex pattern to detect invalid user accounts. This blocks
+connections from remote hosts who are attempting to login
+with accounts not found on the local system.
+While these connections to non-existent accounts are relatively harmless,
+they are usually used as part of a brute force attack and filtering them
+before they reach OpenSSH is a good idea.
 
 
 2.10
@@ -354,7 +398,7 @@ DENYHOSTS CHANGELOG
 
 - added 1 second sleep between stop & start in daemon-control-dist for "restart" command.
 
-- Added ShoreWall plugins (thanks to Stéphane LeDauphin for the contribution).
+- Added ShoreWall plugins (thanks to StÃ©phane LeDauphin for the contribution).
 
 - Fixed licensing ambiguity (DenyHosts is GPL v2).
 

@@ -1,6 +1,8 @@
 DenyHosts
 =========
 
+[![Build Status](https://travis-ci.org/denyhosts/denyhosts.svg?branch=master)](https://travis-ci.org/josev814/denyhosts.svg?branch=master)
+
 DenyHosts is a utility developed by Phil Schwartz and maintained by a
 number of developers which aims to thwart sshd (ssh server) brute force attacks.
 
@@ -9,13 +11,22 @@ Please refer to https://github.com/denyhosts/denyhosts for more information.
 Installation
 ============
 
+
+Requirements
+------------
+
+The DenyHosts software depends on the "ipaddr" Python module,
+which is available in most Linux and BSD repositories.
+
+
+
 Source Distribution
 -------------------
 
 If you downloaded the source distribution file (DenyHosts-#.#-tar.gz)
 then:
 
-    $ tar zxvf DenyHosts-2.10.tar.gz       (Where #.#.# is the version)
+    $ tar zxvf DenyHosts-3.1.tar.gz 
 
     $ cd denyhosts
 
@@ -44,9 +55,10 @@ then edited as such:
 
     # cp denyhosts.conf /etc
 
-    # <edit> /etc/denyhosts.conf
+    # nano /etc/denyhosts.conf
 
-(where <edit> is your preferred text editor such as emacs, vi, etc)
+(nano is a simple text editor. Feel free to use your own favourite
+text editor such as emacs, vi, etc)
 
 The sample configuration file contains informational comments that
 should help you quickly configure DenyHosts.  After you have
@@ -96,6 +108,16 @@ http://www.denyhosts.net/faq.html
 
 If you wish to run DenyHosts from cron rather than as a
 daemon, please refer to the FAQ.
+
+Another way to start DenyHosts manually is to run it from the command
+line, usually supply a few common parameters. Usually, when running
+DenyHosts from the command line (or from the /etc/rc.local script) we
+can launch the program by running
+
+     # python /usr/local/bin/denyhosts --config /etc/denyhosts.conf --daemon
+
+The above command launches DenyHosts and runs it in the background. DenyHosts
+will use the /etc/denyhosts.conf configuration file to dictate its behavour.
 
 
 Starting DenyHosts Automatically

@@ -22,7 +22,8 @@ import os
 import signal
 import sys
 
-def createDaemon():
+
+def createdaemon():
     """Detach a process from the controlling terminal and run it in the
     background as a daemon.
     """
@@ -35,7 +36,7 @@ def createDaemon():
         # the child gets a new PID, making it impossible for its PID to equal its
         # PGID.
         pid = os.fork()
-    except OSError, e:
+    except OSError as e:
         return e.errno, e.strerror  # ERROR (return a tuple)
 
     if pid == 0:  # The first child.
@@ -60,7 +61,7 @@ def createDaemon():
             # fork guarantees that the child is no longer a session leader, thus
             # preventing the daemon from ever acquiring a controlling terminal.
             pid = os.fork()  # Fork a second child.
-        except OSError, e:
+        except OSError as e:
             return e.errno, e.strerror  # ERROR (return a tuple)
 
         if pid == 0:  # The second child.
@@ -88,17 +89,24 @@ def createDaemon():
 
     return 0
 
+
 if __name__ == "__main__":
     # Self-test.
 
-    retCode = createDaemon()
+    retCode = createdaemon()
 
     # If executed with superuser privilages, there should be a new file in the
     # "/" directory.  It should contain the function's return code, the daemon's
     # PID, PPID, and PGRP.  Its PID should not equal its PGRP, and its PPID
     # should equal 1.  If it's executed without superuser privilages, the file
     # won't be created and no errors will be reported.
-    open("createDaemon.log", "w").write("rc: %s; pid: %d; ppid: %d; pgrp: %d" % \
-                                        (retCode, os.getpid(), os.getppid(), os.getpgrp()))
+    open("createDaemon.log", "w").write(
+        "rc: %s; pid: %d; ppid: %d; pgrp: %d" % (
+            retCode,
+            os.getpid(),
+            os.getppid(),
+            os.getpgrp()
+        )
+    )
 
     sys.exit(0)
