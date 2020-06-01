@@ -118,10 +118,10 @@ class IpTables(object):
 
 
 class IpSet(object):
-    blacklist = 'denyhosts-blacklist'
 
     def __init__(self, prefs):
         self.prefs = prefs
+        self.blacklist = prefs.get('IPSET_NAME')
 
     def initial_setup(self):
         if not self.does_blacklist_exist():

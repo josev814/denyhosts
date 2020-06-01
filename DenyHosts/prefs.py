@@ -36,7 +36,7 @@ class Prefs(dict):
                        'PLUGIN_PURGE': None,
                        'IPTABLES': None,
                        'IPSET_COMMAND': None,
-                       'IPSET_NAME': 'denyhost',
+                       'IPSET_NAME': 'denyhosts-blacklist',
                        'BLOCKPORT': None,
                        'PFCTL_PATH': None,
                        'PF_TABLE': None,
