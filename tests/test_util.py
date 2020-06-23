@@ -4,6 +4,7 @@ import unittest
 
 from os.path import dirname, join as ospj
 import DenyHosts.util as util
+from DenyHosts.emailer import Email
 from DenyHosts.prefs import Prefs
 from datetime import datetime
 
@@ -92,10 +93,14 @@ class UtilsTest(unittest.TestCase):
             self.assertEqual(cm.exception, 'Error')
 
     def test_send_email_success(self):
-        self.assertIsNone(util.send_email(self.prefs, 'testing report success'))
+        emailer = Email(self.prefs)
+        self.assertIsNone(emailer)
+        self.assertIsNone(emailer.send_email('testing report success'))
 
     def test_send_email_error(self):
-        self.assertIsNone(util.send_email(self.prefs, 'testing report failure'))
+        emailer = Email(self.prefs)
+        self.assertIsNone(emailer)
+        self.assertIsNone(emailer.send_email('testing report failure'))
 
     def test_whitespace(self):
         self.assertEqual(

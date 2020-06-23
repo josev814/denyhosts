@@ -23,7 +23,8 @@ from .report import Report
 from .restricted import Restricted
 from .sync import Sync
 from .firewalls import IpTables
-from .util import die, is_true, parse_host, send_email, is_valid_ip_address, hostname_lookup
+from .util import die, is_true, parse_host, is_valid_ip_address, hostname_lookup
+from .emailer import Email
 from .version import VERSION
 
 debug = logging.getLogger("denyhosts").debug
@@ -528,7 +529,9 @@ allowed based on your %s file""" % (self.__prefs.get("HOSTS_DENY"),
         if not self.__report.empty():
             if not self.__noemail:
                 # send the report via email if configured
-                send_email(self.__prefs, self.__report.get_report())
+                emailer = Email(self.__prefs)
+                emailer.send_email(self.__report.get_report())
+                del emailer
             elif not self.__daemon:
                 # otherwise, if not in daemon mode, log the report to the console
                 info(self.__report.get_report())
