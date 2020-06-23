@@ -20,6 +20,7 @@ from DenyHosts.denyfileutil import Purge, PurgeIP, Migrate, UpgradeTo099
 from DenyHosts.firewalls import IpTables
 from DenyHosts.constants import *
 from DenyHosts.sync import Sync
+from DenyHosts.emailer import Email
 
 logging.basicConfig()
 logger = logging.getLogger('denyhosts')
@@ -38,6 +39,7 @@ def usage():
     print(" --file:   The name of log file to parse")
     print(" --ignore: Ignore last processed offset (start processing from beginning)")
     print(" --noemail: Do not send an email report")
+    print(" --test-email: Do not send an email report")
     print(" --unlock: if lockfile exists, remove it and run as normal")
     print(" --migrate: migrate your HOSTS_DENY file so that it is suitable for --purge")
     print(" --purge: expire entries older than your PURGE_DENY setting")
@@ -73,6 +75,7 @@ if __name__ == '__main__':
     purge = 0
     purge_all = 0
     sync_mode = 0
+    test_email = 0
     daemon = 0
     foreground = 0
     enable_debug = 0
@@ -101,6 +104,8 @@ if __name__ == '__main__':
             ignore_offset = 1
         if opt in ('-n', '--noemail'):
             noemail = 1
+        if opt in ('--test-email'):
+            test_email = 1
         if opt in ('-v', '--verbose'):
             verbose = 1
         if opt in ('-d', '--debug'):
@@ -213,6 +218,21 @@ if __name__ == '__main__':
             die("You have supplied the --migrate flag however you have not set PURGE_DENY in your configuration file.")
         else:
             m = Migrate(prefs.get("HOSTS_DENY"))
+
+    if test_email:
+        if noemail:
+            print(
+                'You have provided the --test-email flag however --noemail is also set.  '
+                'The email method will be set to STDOUT'
+            )
+            prefs._Prefs__data['EMAIL_METHOD'] = 'STDOUT'
+        try:
+            emailer = Email(prefs)
+            emailer.send_email('Sending an email from Denyhosts to ensure emailing is setup properly')
+        except Exception as e:
+            print('Failed to send the test e-mail with error: {}'.format(emailer))
+        lock_file.remove()
+        die('The Email test has finished')
 
     if purgeip or purge or purge_all:
         removed_hosts = None
