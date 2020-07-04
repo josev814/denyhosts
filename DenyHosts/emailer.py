@@ -49,7 +49,7 @@ class Email(object):
     def smtp_connect(self):
         try:
             # this applies a fix for a python 3.7 bug
-            self.smtp(self.smtp_host)
+            self.smtp(host=self.smtp_host, port=self.smtp_port)
             # https://github.com/ansible/ansible/pull/44552
             self.smtp.connect(
                 self.smtp_host,
