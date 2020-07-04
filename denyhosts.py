@@ -32,7 +32,7 @@ debug = logger.debug
 def usage():
     print("Usage:")
     print('{0} [-f logfile | --file=logfile] [ -c configfile | --config configfile] '
-          '[-i | --ignore] [-n | --noemail] [--purge] [--purge-all] [--purgeip ip] '
+          '[-i | --ignore] [-n | --noemail] [--test-email] [--purge] [--purge-all] [--purgeip ip] '
           '[--migrate] [--daemon] [--sync] [--version]'.format(sys.argv[0]))
     print("\n\n")
     print(" --config: The pathname of the configuration file")
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     try:
         (opts, getopts) = getopt.getopt(args, 'f:c:dinuvps?hV',
                                         ["file=", "ignore", "verbose", "debug",
-                                         "help", "noemail", "config=", "version",
+                                         "help", "noemail", "test-email", "config=", "version",
                                          "migrate", "purge", "purge-all", "purgeip", "daemon", "foreground",
                                          "unlock", "sync", "upgrade099"])
     except GetoptError:
