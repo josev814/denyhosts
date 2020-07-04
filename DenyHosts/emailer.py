@@ -2,6 +2,7 @@ import logging
 import logging.handlers
 import time
 
+import smtplib
 from smtplib import SMTP, SMTP_SSL
 from smtplib import SMTPResponseException
 from smtplib import SMTPHeloError
@@ -47,6 +48,9 @@ class Email(object):
 
     def smtp_connect(self):
         try:
+            # this applies a fix for a python 3.7 bug
+            self.smtp(self.smtp_host)
+            # https://github.com/ansible/ansible/pull/44552
             self.smtp.connect(
                 self.smtp_host,
                 self.smtp_port
